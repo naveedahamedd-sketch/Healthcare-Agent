@@ -1,0 +1,61 @@
+{
+  "alerts": [
+    {
+      "patient_id": "scan-emergency",
+      "created_at": "2026-06-29T14:54:37",
+      "message": "I have chest pain and cannot breathe",
+      "clinical_slots": {
+        "symptoms": [
+          "chest pain"
+        ],
+        "red_flags": [
+          "chest pain",
+          "cannot breathe"
+        ]
+      },
+      "urgency_level": "emergency",
+      "status": "logged",
+      "channels": [
+        "local_log"
+      ]
+    },
+    {
+      "patient_id": "demo-patient",
+      "created_at": "2026-06-30T23:04:45",
+      "message": "I have chest pain and cannot breathe",
+      "clinical_slots": {
+        "symptoms": [
+          "chest pain"
+        ],
+        "red_flags": [
+          "chest pain",
+          "cannot breathe"
+        ]
+      },
+      "urgency_level": "emergency",
+      "status": "logged",
+      "channels": [
+        "local_log"
+      ]
+    },
+    {
+      "patient_id": "demo-patient",
+      "created_at": "2026-07-01T21:14:45",
+      "message": "I have chest pain and cannot breathe",
+      "clinical_slots": {
+        "symptoms": [
+          "chest pain"
+        ],
+        "red_flags": [
+          "chest pain",
+          "cannot breathe"
+        ]
+      },
+      "urgency_level": "emergency",
+      "status": "logged",
+      "channels": [
+        "local_log"
+      ]
+    }
+  ]
+}

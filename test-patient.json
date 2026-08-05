@@ -1,0 +1,367 @@
+{
+  "patient_id": "test-patient",
+  "updated_at": "2026-07-01T18:22:05.464305+00:00",
+  "metadata": {
+    "intent": "pharmacy",
+    "intent_reason": "Selected pharmacy with confidence 0.90. Urgency level: routine. medication signal: metformin recent conversation was medication-related patient profile contains medication history Extracted clinical slots: medications. Missing information: Dose or strength and when it was taken; Relevant conditions such as pregnancy, kidney disease, liver disease, ulcers, or blood thinner use. Quality gates: pharmacy_context_gap=watch.",
+    "care_plan": {
+      "selected_intent": "pharmacy",
+      "secondary_intents": [],
+      "urgency_level": "routine",
+      "route_scores": [
+        {
+          "intent": "pharmacy",
+          "score": 0.9,
+          "evidence": [
+            "medication signal: metformin",
+            "recent conversation was medication-related",
+            "patient profile contains medication history"
+          ]
+        },
+        {
+          "intent": "rag",
+          "score": 0.28,
+          "evidence": []
+        },
+        {
+          "intent": "alert",
+          "score": 0.0,
+          "evidence": []
+        },
+        {
+          "intent": "scheduling",
+          "score": 0.0,
+          "evidence": []
+        }
+      ],
+      "clinical_slots": {
+        "medications": [
+          "metformin"
+        ]
+      },
+      "reasoning_trace": [
+        "Selected pharmacy with confidence 0.90.",
+        "Urgency level: routine.",
+        "medication signal: metformin",
+        "recent conversation was medication-related",
+        "patient profile contains medication history",
+        "Extracted clinical slots: medications.",
+        "Missing information: Dose or strength and when it was taken; Relevant conditions such as pregnancy, kidney disease, liver disease, ulcers, or blood thinner use.",
+        "Quality gates: pharmacy_context_gap=watch."
+      ],
+      "suggested_followups": [
+        "What is the exact medication name and strength on the label?",
+        "How much was taken and when?",
+        "Are there allergies, pregnancy, kidney disease, liver disease, or blood thinners involved?"
+      ],
+      "missing_information": [
+        "Dose or strength and when it was taken",
+        "Relevant conditions such as pregnancy, kidney disease, liver disease, ulcers, or blood thinner use"
+      ],
+      "agent_actions": [
+        {
+          "name": "resolve_memory_context",
+          "status": "completed",
+          "rationale": "Loaded recent conversation and patient profile before choosing a specialist.",
+          "details": {
+            "memory_messages_available": 2,
+            "recent_messages_used": 2
+          }
+        },
+        {
+          "name": "parse_patient_context",
+          "status": "completed",
+          "rationale": "Extracted symptoms, medications, timing, risk phrases, and profile signals.",
+          "details": {
+            "missing_information_count": 2
+          }
+        },
+        {
+          "name": "screen_for_emergency",
+          "status": "completed",
+          "rationale": "Urgency classified as routine.",
+          "details": {
+            "urgency_level": "routine",
+            "measurement_flags": {},
+            "negated_red_flags": []
+          }
+        },
+        {
+          "name": "build_triage_context_packet",
+          "status": "completed",
+          "rationale": "Combined extracted slots, vital-style measurements, memory, and profile signals before routing.",
+          "details": {
+            "clinical_slot_count": 1,
+            "measurement_count": 0
+          }
+        },
+        {
+          "name": "quality_gate_review",
+          "status": "completed",
+          "rationale": "Route confidence, ambiguity, and required-field checks passed.",
+          "details": {
+            "blocking_gates": []
+          }
+        },
+        {
+          "name": "consult_pharmacy_agent",
+          "status": "completed",
+          "rationale": "Medication safety questions require a named medicine before detailed lookup.",
+          "details": {
+            "blocking_fields": []
+          }
+        },
+        {
+          "name": "update_patient_memory",
+          "status": "completed",
+          "rationale": "Persist patient-provided context for safer follow-up turns.",
+          "details": {}
+        }
+      ],
+      "quality_gates": [
+        {
+          "name": "pharmacy_context_gap",
+          "status": "watch",
+          "reason": "The Pharmacy Agent can provide general information, but patient-specific dosing and risk review need the missing context.",
+          "details": {
+            "missing_information": [
+              "Dose or strength and when it was taken",
+              "Relevant conditions such as pregnancy, kidney disease, liver disease, ulcers, or blood thinner use"
+            ]
+          }
+        }
+      ],
+      "needs_clarification": false,
+      "profile_signals": {
+        "medications": [
+          "metformin"
+        ]
+      },
+      "confidence": 0.9,
+      "model_efficiency": {
+        "routing_mode": "deterministic triage scoring",
+        "route_count": 4,
+        "secondary_intents": [],
+        "secondary_specialist_strategy": "preview_non_emergency",
+        "memory_messages_available": 2,
+        "recent_messages_used": 2,
+        "profile_signal_count": 1,
+        "planned_specialist_calls": 1,
+        "deferred_specialist_calls": 0,
+        "clarification_first": false,
+        "clinical_slot_count": 1,
+        "measurement_signal_count": 0,
+        "negated_red_flag_count": 0
+      },
+      "secondary_outputs": []
+    },
+    "secondary_outputs": [],
+    "safety_flags": [
+      "medical_disclaimer_added",
+      "medication_safety_note_added"
+    ],
+    "workflow_trace": [
+      {
+        "step": 1,
+        "name": "patient_input",
+        "status": "completed",
+        "summary": "Accepted free-form patient symptom, question, or request."
+      },
+      {
+        "step": 2,
+        "name": "load_memory",
+        "status": "completed",
+        "summary": "Loaded 2 previous conversation messages and stored patient profile."
+      },
+      {
+        "step": 3,
+        "name": "intent_classifier",
+        "status": "completed",
+        "summary": "Selected pharmacy route with urgency routine."
+      },
+      {
+        "step": 4,
+        "name": "specialist_agent",
+        "status": "completed",
+        "summary": "Routed to Pharmacy Agent."
+      },
+      {
+        "step": 5,
+        "name": "response_synthesizer",
+        "status": "completed",
+        "summary": "Converted specialist output into simple, patient-friendly language."
+      },
+      {
+        "step": 6,
+        "name": "safety_guardrails",
+        "status": "completed",
+        "summary": "Applied emergency escalation, diagnosis blocking, disclaimers, and medication safety checks."
+      },
+      {
+        "step": 7,
+        "name": "patient_reply",
+        "status": "completed",
+        "summary": "Prepared the final clean response for the patient chat UI."
+      },
+      {
+        "step": 8,
+        "name": "update_memory",
+        "status": "completed",
+        "summary": "Saved the patient and assistant exchange; memory now keeps up to 4 messages."
+      }
+    ],
+    "governance_card": {
+      "intended_use": "General health education, routing, and care-team handoff support.",
+      "decision_role": "Informs or augments patient and care-team decisions; does not replace clinical judgment.",
+      "source_quality": "trusted",
+      "sources": [
+        {
+          "name": "MedlinePlus - Metformin",
+          "url": "https://medlineplus.gov/druginfo/meds/a696005.html"
+        }
+      ],
+      "handoff": {
+        "level": "pharmacist_or_prescriber",
+        "owner": "Pharmacist or prescriber",
+        "reason": "Medication advice needs exact label details and patient-specific risk factors."
+      },
+      "handoff_packet": {
+        "title": "Pharmacy handoff packet",
+        "urgency_level": "routine",
+        "handoff_level": "pharmacist_or_prescriber",
+        "handoff_owner": "Pharmacist or prescriber",
+        "primary_agent": "Pharmacy Agent",
+        "route_summary": [
+          "pharmacy: 0.90 (medication signal: metformin; recent conversation was medication-related)",
+          "rag: 0.28",
+          "alert: 0.00",
+          "scheduling: 0.00"
+        ],
+        "known_facts": [
+          "Medications: metformin"
+        ],
+        "missing_information": [
+          "Dose or strength and when it was taken",
+          "Relevant conditions such as pregnancy, kidney disease, liver disease, ulcers, or blood thinner use"
+        ],
+        "secondary_work": [],
+        "next_best_action": "Ask the patient for: Dose or strength and when it was taken; Relevant conditions such as pregnancy, kidney disease, liver disease, ulcers, or blood thinner use.",
+        "safety_flags": [
+          "medical_disclaimer_added",
+          "medication_safety_note_added"
+        ],
+        "reasoning_snapshot": [
+          "Selected pharmacy with confidence 0.90.",
+          "Urgency level: routine.",
+          "medication signal: metformin",
+          "recent conversation was medication-related"
+        ]
+      },
+      "quality_gates": [
+        {
+          "name": "pharmacy_context_gap",
+          "status": "watch",
+          "reason": "The Pharmacy Agent can provide general information, but patient-specific dosing and risk review need the missing context.",
+          "details": {
+            "missing_information": [
+              "Dose or strength and when it was taken",
+              "Relevant conditions such as pregnancy, kidney disease, liver disease, ulcers, or blood thinner use"
+            ]
+          }
+        }
+      ],
+      "secondary_intents": [],
+      "secondary_outputs": [],
+      "model_efficiency": {
+        "routing_mode": "deterministic triage scoring",
+        "route_count": 4,
+        "secondary_intents": [],
+        "secondary_specialist_strategy": "preview_non_emergency",
+        "memory_messages_available": 2,
+        "recent_messages_used": 2,
+        "profile_signal_count": 1,
+        "planned_specialist_calls": 1,
+        "deferred_specialist_calls": 0,
+        "clarification_first": false,
+        "clinical_slot_count": 1,
+        "measurement_signal_count": 0,
+        "negated_red_flag_count": 0
+      },
+      "limitations": [
+        "Educational support only; not a diagnosis or substitute for a clinician.",
+        "Patient-reported text may be incomplete, ambiguous, or inaccurate.",
+        "Local demo data can become stale and should be reviewed before production use.",
+        "The model should inform or augment decisions, not replace clinical management.",
+        "No personalized dose changes, starts, stops, or interactions are provided."
+      ],
+      "risk_controls": [
+        "Emergency signal override",
+        "Measurement-aware triage",
+        "Negation-aware emergency screening",
+        "Bounded secondary specialist preview",
+        "Secondary route tracking",
+        "Structured handoff packet",
+        "Agent quality gate review",
+        "Medication safety note",
+        "Diagnosis language blocking",
+        "Source-quality check",
+        "Memory trace and workflow audit"
+      ]
+    },
+    "handoff_packet": {
+      "title": "Pharmacy handoff packet",
+      "urgency_level": "routine",
+      "handoff_level": "pharmacist_or_prescriber",
+      "handoff_owner": "Pharmacist or prescriber",
+      "primary_agent": "Pharmacy Agent",
+      "route_summary": [
+        "pharmacy: 0.90 (medication signal: metformin; recent conversation was medication-related)",
+        "rag: 0.28",
+        "alert: 0.00",
+        "scheduling: 0.00"
+      ],
+      "known_facts": [
+        "Medications: metformin"
+      ],
+      "missing_information": [
+        "Dose or strength and when it was taken",
+        "Relevant conditions such as pregnancy, kidney disease, liver disease, ulcers, or blood thinner use"
+      ],
+      "secondary_work": [],
+      "next_best_action": "Ask the patient for: Dose or strength and when it was taken; Relevant conditions such as pregnancy, kidney disease, liver disease, ulcers, or blood thinner use.",
+      "safety_flags": [
+        "medical_disclaimer_added",
+        "medication_safety_note_added"
+      ],
+      "reasoning_snapshot": [
+        "Selected pharmacy with confidence 0.90.",
+        "Urgency level: routine.",
+        "medication signal: metformin",
+        "recent conversation was medication-related"
+      ]
+    }
+  },
+  "patient_profile": {
+    "medications": [
+      "metformin"
+    ]
+  },
+  "messages": [
+    {
+      "role": "patient",
+      "content": "I take metformin"
+    },
+    {
+      "role": "assistant",
+      "content": "Here is general information about metformin: Metformin is prescribed to help manage blood sugar in type 2 diabetes. Take it exactly as prescribed and follow your care team's blood sugar monitoring plan. Common side effects can include nausea, diarrhea, stomach discomfort. Important cautions: Tell your clinician about kidney, liver, heart, or heavy alcohol use risks. Seek urgent help for severe weakness, unusual sleepiness, deep or rapid breathing, severe vomiting, or feeling very cold. Source: MedlinePlus - Metformin.\n\nStill needed: Dose or strength and when it was taken; Relevant conditions such as pregnancy, kidney disease, liver disease, ulcers, or blood thinner use\n\nThis is general information, not a diagnosis. Please contact your doctor or care team for personal medical advice.\n\nUse medication only as directed on the label or by your prescriber. If you notice severe symptoms, an allergic reaction, or took more than directed, seek urgent help."
+    },
+    {
+      "role": "patient",
+      "content": "What about it?"
+    },
+    {
+      "role": "assistant",
+      "content": "Here is general information about metformin: Metformin is prescribed to help manage blood sugar in type 2 diabetes. Take it exactly as prescribed and follow your care team's blood sugar monitoring plan. Common side effects can include nausea, diarrhea, stomach discomfort. Important cautions: Tell your clinician about kidney, liver, heart, or heavy alcohol use risks. Seek urgent help for severe weakness, unusual sleepiness, deep or rapid breathing, severe vomiting, or feeling very cold. Source: MedlinePlus - Metformin.\n\nStill needed: Dose or strength and when it was taken; Relevant conditions such as pregnancy, kidney disease, liver disease, ulcers, or blood thinner use\n\nThis is general information, not a diagnosis. Please contact your doctor or care team for personal medical advice.\n\nUse medication only as directed on the label or by your prescriber. If you notice severe symptoms, an allergic reaction, or took more than directed, seek urgent help."
+    }
+  ]
+}

@@ -1,0 +1,310 @@
+{
+  "patient_id": "demo-patient",
+  "updated_at": "2026-07-01T18:22:04.718688+00:00",
+  "metadata": {
+    "intent": "scheduling",
+    "intent_reason": "Selected scheduling with confidence 0.55. Urgency level: routine. scheduling signal: appointment Quality gates: moderate_route_confidence=watch.",
+    "care_plan": {
+      "selected_intent": "scheduling",
+      "secondary_intents": [],
+      "urgency_level": "routine",
+      "route_scores": [
+        {
+          "intent": "scheduling",
+          "score": 0.55,
+          "evidence": [
+            "scheduling signal: appointment"
+          ]
+        },
+        {
+          "intent": "rag",
+          "score": 0.28,
+          "evidence": []
+        },
+        {
+          "intent": "alert",
+          "score": 0.0,
+          "evidence": []
+        },
+        {
+          "intent": "pharmacy",
+          "score": 0.0,
+          "evidence": []
+        }
+      ],
+      "clinical_slots": {},
+      "reasoning_trace": [
+        "Selected scheduling with confidence 0.55.",
+        "Urgency level: routine.",
+        "scheduling signal: appointment",
+        "Quality gates: moderate_route_confidence=watch."
+      ],
+      "suggested_followups": [
+        "What day or time works best?",
+        "What is the reason for the visit?",
+        "Do you need a reminder or reschedule?"
+      ],
+      "missing_information": [],
+      "agent_actions": [
+        {
+          "name": "resolve_memory_context",
+          "status": "completed",
+          "rationale": "Loaded recent conversation and patient profile before choosing a specialist.",
+          "details": {
+            "memory_messages_available": 0,
+            "recent_messages_used": 0
+          }
+        },
+        {
+          "name": "parse_patient_context",
+          "status": "completed",
+          "rationale": "Extracted symptoms, medications, timing, risk phrases, and profile signals.",
+          "details": {
+            "missing_information_count": 0
+          }
+        },
+        {
+          "name": "screen_for_emergency",
+          "status": "completed",
+          "rationale": "Urgency classified as routine.",
+          "details": {
+            "urgency_level": "routine",
+            "measurement_flags": {},
+            "negated_red_flags": []
+          }
+        },
+        {
+          "name": "build_triage_context_packet",
+          "status": "completed",
+          "rationale": "Combined extracted slots, vital-style measurements, memory, and profile signals before routing.",
+          "details": {
+            "clinical_slot_count": 0,
+            "measurement_count": 0
+          }
+        },
+        {
+          "name": "quality_gate_review",
+          "status": "completed",
+          "rationale": "Route confidence, ambiguity, and required-field checks passed.",
+          "details": {
+            "blocking_gates": []
+          }
+        },
+        {
+          "name": "coordinate_scheduling_agent",
+          "status": "completed",
+          "rationale": "Appointment requests can be checked or drafted from local scheduling data.",
+          "details": {
+            "missing_information": []
+          }
+        },
+        {
+          "name": "update_patient_memory",
+          "status": "completed",
+          "rationale": "Persist patient-provided context for safer follow-up turns.",
+          "details": {}
+        }
+      ],
+      "quality_gates": [
+        {
+          "name": "moderate_route_confidence",
+          "status": "watch",
+          "reason": "The selected route is usable but should ask for concrete follow-up details.",
+          "details": {
+            "confidence": 0.55,
+            "threshold": 0.58
+          }
+        }
+      ],
+      "needs_clarification": false,
+      "profile_signals": {},
+      "confidence": 0.55,
+      "model_efficiency": {
+        "routing_mode": "deterministic triage scoring",
+        "route_count": 4,
+        "secondary_intents": [],
+        "secondary_specialist_strategy": "preview_non_emergency",
+        "memory_messages_available": 0,
+        "recent_messages_used": 0,
+        "profile_signal_count": 0,
+        "planned_specialist_calls": 1,
+        "deferred_specialist_calls": 0,
+        "clarification_first": false,
+        "clinical_slot_count": 0,
+        "measurement_signal_count": 0,
+        "negated_red_flag_count": 0
+      },
+      "secondary_outputs": []
+    },
+    "secondary_outputs": [],
+    "safety_flags": [],
+    "workflow_trace": [
+      {
+        "step": 1,
+        "name": "patient_input",
+        "status": "completed",
+        "summary": "Accepted free-form patient symptom, question, or request."
+      },
+      {
+        "step": 2,
+        "name": "load_memory",
+        "status": "completed",
+        "summary": "Loaded 0 previous conversation messages and stored patient profile."
+      },
+      {
+        "step": 3,
+        "name": "intent_classifier",
+        "status": "completed",
+        "summary": "Selected scheduling route with urgency routine."
+      },
+      {
+        "step": 4,
+        "name": "specialist_agent",
+        "status": "completed",
+        "summary": "Routed to Scheduling Agent."
+      },
+      {
+        "step": 5,
+        "name": "response_synthesizer",
+        "status": "completed",
+        "summary": "Converted specialist output into simple, patient-friendly language."
+      },
+      {
+        "step": 6,
+        "name": "safety_guardrails",
+        "status": "completed",
+        "summary": "Applied emergency escalation, diagnosis blocking, disclaimers, and medication safety checks."
+      },
+      {
+        "step": 7,
+        "name": "patient_reply",
+        "status": "completed",
+        "summary": "Prepared the final clean response for the patient chat UI."
+      },
+      {
+        "step": 8,
+        "name": "update_memory",
+        "status": "completed",
+        "summary": "Saved the patient and assistant exchange; memory now keeps up to 2 messages."
+      }
+    ],
+    "governance_card": {
+      "intended_use": "General health education, routing, and care-team handoff support.",
+      "decision_role": "Informs or augments patient and care-team decisions; does not replace clinical judgment.",
+      "source_quality": "none",
+      "sources": [],
+      "handoff": {
+        "level": "clinician_review",
+        "owner": "Care team",
+        "reason": "The agent has limited source support or low route confidence."
+      },
+      "handoff_packet": {
+        "title": "Scheduling handoff packet",
+        "urgency_level": "routine",
+        "handoff_level": "clinician_review",
+        "handoff_owner": "Care team",
+        "primary_agent": "Scheduling Agent",
+        "route_summary": [
+          "scheduling: 0.55 (scheduling signal: appointment)",
+          "rag: 0.28",
+          "alert: 0.00",
+          "pharmacy: 0.00"
+        ],
+        "known_facts": [],
+        "missing_information": [],
+        "secondary_work": [],
+        "next_best_action": "Confirm the appointment details with the care team and watch for any urgent symptom changes.",
+        "safety_flags": [],
+        "reasoning_snapshot": [
+          "Selected scheduling with confidence 0.55.",
+          "Urgency level: routine.",
+          "scheduling signal: appointment",
+          "Quality gates: moderate_route_confidence=watch."
+        ]
+      },
+      "quality_gates": [
+        {
+          "name": "moderate_route_confidence",
+          "status": "watch",
+          "reason": "The selected route is usable but should ask for concrete follow-up details.",
+          "details": {
+            "confidence": 0.55,
+            "threshold": 0.58
+          }
+        }
+      ],
+      "secondary_intents": [],
+      "secondary_outputs": [],
+      "model_efficiency": {
+        "routing_mode": "deterministic triage scoring",
+        "route_count": 4,
+        "secondary_intents": [],
+        "secondary_specialist_strategy": "preview_non_emergency",
+        "memory_messages_available": 0,
+        "recent_messages_used": 0,
+        "profile_signal_count": 0,
+        "planned_specialist_calls": 1,
+        "deferred_specialist_calls": 0,
+        "clarification_first": false,
+        "clinical_slot_count": 0,
+        "measurement_signal_count": 0,
+        "negated_red_flag_count": 0
+      },
+      "limitations": [
+        "Educational support only; not a diagnosis or substitute for a clinician.",
+        "Patient-reported text may be incomplete, ambiguous, or inaccurate.",
+        "Local demo data can become stale and should be reviewed before production use.",
+        "The model should inform or augment decisions, not replace clinical management.",
+        "No external source was matched for this turn."
+      ],
+      "risk_controls": [
+        "Emergency signal override",
+        "Measurement-aware triage",
+        "Negation-aware emergency screening",
+        "Bounded secondary specialist preview",
+        "Secondary route tracking",
+        "Structured handoff packet",
+        "Agent quality gate review",
+        "Medication safety note",
+        "Diagnosis language blocking",
+        "Source-quality check",
+        "Memory trace and workflow audit"
+      ]
+    },
+    "handoff_packet": {
+      "title": "Scheduling handoff packet",
+      "urgency_level": "routine",
+      "handoff_level": "clinician_review",
+      "handoff_owner": "Care team",
+      "primary_agent": "Scheduling Agent",
+      "route_summary": [
+        "scheduling: 0.55 (scheduling signal: appointment)",
+        "rag: 0.28",
+        "alert: 0.00",
+        "pharmacy: 0.00"
+      ],
+      "known_facts": [],
+      "missing_information": [],
+      "secondary_work": [],
+      "next_best_action": "Confirm the appointment details with the care team and watch for any urgent symptom changes.",
+      "safety_flags": [],
+      "reasoning_snapshot": [
+        "Selected scheduling with confidence 0.55.",
+        "Urgency level: routine.",
+        "scheduling signal: appointment",
+        "Quality gates: moderate_route_confidence=watch."
+      ]
+    }
+  },
+  "patient_profile": {},
+  "messages": [
+    {
+      "role": "patient",
+      "content": "When is my next appointment?"
+    },
+    {
+      "role": "assistant",
+      "content": "Your next appointment is with Dr. Patel on Thursday, July 2, 2026 at 9:30 AM.\n\nHelpful details to share next: What day or time works best?; What is the reason for the visit?; Do you need a reminder or reschedule?"
+    }
+  ]
+}
