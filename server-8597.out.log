@@ -1,0 +1,4 @@
+Healthcare Agent is running at http://localhost:8597/
+Close this window to stop the local app server.
+Exception calling "ReadLine" with "0" argument(s): "Unable to read data from the transport connection: A connection attempt failed because the connected party did not properly respond after a period of time, or established connection failed because connected host has failed to respond."
+Exception calling "ReadLine" with "0" argument(s): "Unable to read data from the transport connection: A connection attempt failed because the connected party did not properly respond after a period of time, or established connection failed because connected host has failed to respond."
