@@ -1,28 +1,29 @@
 {
-  "patient_id": "test-patient",
-  "updated_at": "2026-07-01T18:22:05.551379+00:00",
+  "patient_id": "facade-patient",
+  "updated_at": "2026-07-01T18:22:04.564588+00:00",
   "metadata": {
-    "intent": "pharmacy",
-    "intent_reason": "Selected pharmacy with confidence 0.45. Urgency level: routine. medication signal: ibuprofen Extracted clinical slots: medications. Missing information: Dose or strength and when it was taken; Relevant conditions such as pregnancy, kidney disease, liver disease, ulcers, or blood thinner use. Quality gates: moderate_route_confidence=watch, pharmacy_context_gap=watch.",
+    "intent": "rag",
+    "intent_reason": "Selected rag with confidence 0.64. Urgency level: routine. symptom or general-health signal: headache patient profile contains prior symptoms Extracted clinical slots: symptoms. Missing information: When this started or how long it has been happening; Current severity. Quality gates: route_quality=passed.",
     "care_plan": {
-      "selected_intent": "pharmacy",
+      "selected_intent": "rag",
       "secondary_intents": [],
       "urgency_level": "routine",
       "route_scores": [
         {
-          "intent": "pharmacy",
-          "score": 0.45,
+          "intent": "rag",
+          "score": 0.64,
           "evidence": [
-            "medication signal: ibuprofen"
+            "symptom or general-health signal: headache",
+            "patient profile contains prior symptoms"
           ]
         },
         {
-          "intent": "rag",
-          "score": 0.28,
+          "intent": "alert",
+          "score": 0.0,
           "evidence": []
         },
         {
-          "intent": "alert",
+          "intent": "pharmacy",
           "score": 0.0,
           "evidence": []
         },
@@ -33,26 +34,27 @@
         }
       ],
       "clinical_slots": {
-        "medications": [
-          "ibuprofen"
+        "symptoms": [
+          "headache"
         ]
       },
       "reasoning_trace": [
-        "Selected pharmacy with confidence 0.45.",
+        "Selected rag with confidence 0.64.",
         "Urgency level: routine.",
-        "medication signal: ibuprofen",
-        "Extracted clinical slots: medications.",
-        "Missing information: Dose or strength and when it was taken; Relevant conditions such as pregnancy, kidney disease, liver disease, ulcers, or blood thinner use.",
-        "Quality gates: moderate_route_confidence=watch, pharmacy_context_gap=watch."
+        "symptom or general-health signal: headache",
+        "patient profile contains prior symptoms",
+        "Extracted clinical slots: symptoms.",
+        "Missing information: When this started or how long it has been happening; Current severity.",
+        "Quality gates: route_quality=passed."
       ],
       "suggested_followups": [
-        "What is the exact medication name and strength on the label?",
-        "How much was taken and when?",
-        "Are there allergies, pregnancy, kidney disease, liver disease, or blood thinners involved?"
+        "When did this start?",
+        "How severe is it right now?",
+        "Are there fever, breathing problems, chest pain, fainting, confusion, or new weakness?"
       ],
       "missing_information": [
-        "Dose or strength and when it was taken",
-        "Relevant conditions such as pregnancy, kidney disease, liver disease, ulcers, or blood thinner use"
+        "When this started or how long it has been happening",
+        "Current severity"
       ],
       "agent_actions": [
         {
@@ -100,11 +102,14 @@
           }
         },
         {
-          "name": "consult_pharmacy_agent",
+          "name": "retrieve_health_knowledge",
           "status": "completed",
-          "rationale": "Medication safety questions require a named medicine before detailed lookup.",
+          "rationale": "General health questions are answered from the local knowledge library.",
           "details": {
-            "blocking_fields": []
+            "missing_information": [
+              "When this started or how long it has been happening",
+              "Current severity"
+            ]
           }
         },
         {
@@ -116,33 +121,21 @@
       ],
       "quality_gates": [
         {
-          "name": "moderate_route_confidence",
-          "status": "watch",
-          "reason": "The selected route is usable but should ask for concrete follow-up details.",
+          "name": "route_quality",
+          "status": "passed",
+          "reason": "Route confidence and required fields are sufficient for this turn.",
           "details": {
-            "confidence": 0.45,
-            "threshold": 0.58
-          }
-        },
-        {
-          "name": "pharmacy_context_gap",
-          "status": "watch",
-          "reason": "The Pharmacy Agent can provide general information, but patient-specific dosing and risk review need the missing context.",
-          "details": {
-            "missing_information": [
-              "Dose or strength and when it was taken",
-              "Relevant conditions such as pregnancy, kidney disease, liver disease, ulcers, or blood thinner use"
-            ]
+            "confidence": 0.64
           }
         }
       ],
       "needs_clarification": false,
       "profile_signals": {
-        "medications": [
-          "ibuprofen"
+        "symptoms": [
+          "headache"
         ]
       },
-      "confidence": 0.45,
+      "confidence": 0.64,
       "model_efficiency": {
         "routing_mode": "deterministic triage scoring",
         "route_count": 4,
@@ -162,9 +155,7 @@
     },
     "secondary_outputs": [],
     "safety_flags": [
-      "diagnosis_language_softened",
-      "medical_disclaimer_added",
-      "medication_safety_note_added"
+      "medical_disclaimer_added"
     ],
     "workflow_trace": [
       {
@@ -183,13 +174,13 @@
         "step": 3,
         "name": "intent_classifier",
         "status": "completed",
-        "summary": "Selected pharmacy route with urgency routine."
+        "summary": "Selected rag route with urgency routine."
       },
       {
         "step": 4,
         "name": "specialist_agent",
         "status": "completed",
-        "summary": "Routed to Pharmacy Agent."
+        "summary": "Routed to RAG Agent."
       },
       {
         "step": 5,
@@ -222,67 +213,53 @@
       "source_quality": "trusted",
       "sources": [
         {
-          "name": "MedlinePlus - Ibuprofen",
-          "url": "https://medlineplus.gov/druginfo/meds/a682159.html"
+          "name": "MedlinePlus - Headache",
+          "url": "https://medlineplus.gov/headache.html"
         }
       ],
       "handoff": {
-        "level": "pharmacist_or_prescriber",
-        "owner": "Pharmacist or prescriber",
-        "reason": "Medication advice needs exact label details and patient-specific risk factors."
+        "level": "routine",
+        "owner": "Patient / care team as needed",
+        "reason": "The response is educational and source-supported, with normal safety disclaimers."
       },
       "handoff_packet": {
-        "title": "Pharmacy handoff packet",
+        "title": "Rag handoff packet",
         "urgency_level": "routine",
-        "handoff_level": "pharmacist_or_prescriber",
-        "handoff_owner": "Pharmacist or prescriber",
-        "primary_agent": "Pharmacy Agent",
+        "handoff_level": "routine",
+        "handoff_owner": "Patient / care team as needed",
+        "primary_agent": "RAG Agent",
         "route_summary": [
-          "pharmacy: 0.45 (medication signal: ibuprofen)",
-          "rag: 0.28",
+          "rag: 0.64 (symptom or general-health signal: headache; patient profile contains prior symptoms)",
           "alert: 0.00",
+          "pharmacy: 0.00",
           "scheduling: 0.00"
         ],
         "known_facts": [
-          "Medications: ibuprofen"
+          "Symptoms: headache"
         ],
         "missing_information": [
-          "Dose or strength and when it was taken",
-          "Relevant conditions such as pregnancy, kidney disease, liver disease, ulcers, or blood thinner use"
+          "When this started or how long it has been happening",
+          "Current severity"
         ],
         "secondary_work": [],
-        "next_best_action": "Ask the patient for: Dose or strength and when it was taken; Relevant conditions such as pregnancy, kidney disease, liver disease, ulcers, or blood thinner use.",
+        "next_best_action": "Ask the patient for: When this started or how long it has been happening; Current severity.",
         "safety_flags": [
-          "diagnosis_language_softened",
-          "medical_disclaimer_added",
-          "medication_safety_note_added"
+          "medical_disclaimer_added"
         ],
         "reasoning_snapshot": [
-          "Selected pharmacy with confidence 0.45.",
+          "Selected rag with confidence 0.64.",
           "Urgency level: routine.",
-          "medication signal: ibuprofen",
-          "Extracted clinical slots: medications."
+          "symptom or general-health signal: headache",
+          "patient profile contains prior symptoms"
         ]
       },
       "quality_gates": [
         {
-          "name": "moderate_route_confidence",
-          "status": "watch",
-          "reason": "The selected route is usable but should ask for concrete follow-up details.",
+          "name": "route_quality",
+          "status": "passed",
+          "reason": "Route confidence and required fields are sufficient for this turn.",
           "details": {
-            "confidence": 0.45,
-            "threshold": 0.58
-          }
-        },
-        {
-          "name": "pharmacy_context_gap",
-          "status": "watch",
-          "reason": "The Pharmacy Agent can provide general information, but patient-specific dosing and risk review need the missing context.",
-          "details": {
-            "missing_information": [
-              "Dose or strength and when it was taken",
-              "Relevant conditions such as pregnancy, kidney disease, liver disease, ulcers, or blood thinner use"
-            ]
+            "confidence": 0.64
           }
         }
       ],
@@ -307,8 +284,7 @@
         "Educational support only; not a diagnosis or substitute for a clinician.",
         "Patient-reported text may be incomplete, ambiguous, or inaccurate.",
         "Local demo data can become stale and should be reviewed before production use.",
-        "The model should inform or augment decisions, not replace clinical management.",
-        "No personalized dose changes, starts, stops, or interactions are provided."
+        "The model should inform or augment decisions, not replace clinical management."
       ],
       "risk_controls": [
         "Emergency signal override",
@@ -325,52 +301,50 @@
       ]
     },
     "handoff_packet": {
-      "title": "Pharmacy handoff packet",
+      "title": "Rag handoff packet",
       "urgency_level": "routine",
-      "handoff_level": "pharmacist_or_prescriber",
-      "handoff_owner": "Pharmacist or prescriber",
-      "primary_agent": "Pharmacy Agent",
+      "handoff_level": "routine",
+      "handoff_owner": "Patient / care team as needed",
+      "primary_agent": "RAG Agent",
       "route_summary": [
-        "pharmacy: 0.45 (medication signal: ibuprofen)",
-        "rag: 0.28",
+        "rag: 0.64 (symptom or general-health signal: headache; patient profile contains prior symptoms)",
         "alert: 0.00",
+        "pharmacy: 0.00",
         "scheduling: 0.00"
       ],
       "known_facts": [
-        "Medications: ibuprofen"
+        "Symptoms: headache"
       ],
       "missing_information": [
-        "Dose or strength and when it was taken",
-        "Relevant conditions such as pregnancy, kidney disease, liver disease, ulcers, or blood thinner use"
+        "When this started or how long it has been happening",
+        "Current severity"
       ],
       "secondary_work": [],
-      "next_best_action": "Ask the patient for: Dose or strength and when it was taken; Relevant conditions such as pregnancy, kidney disease, liver disease, ulcers, or blood thinner use.",
+      "next_best_action": "Ask the patient for: When this started or how long it has been happening; Current severity.",
       "safety_flags": [
-        "diagnosis_language_softened",
-        "medical_disclaimer_added",
-        "medication_safety_note_added"
+        "medical_disclaimer_added"
       ],
       "reasoning_snapshot": [
-        "Selected pharmacy with confidence 0.45.",
+        "Selected rag with confidence 0.64.",
         "Urgency level: routine.",
-        "medication signal: ibuprofen",
-        "Extracted clinical slots: medications."
+        "symptom or general-health signal: headache",
+        "patient profile contains prior symptoms"
       ]
     }
   },
   "patient_profile": {
-    "medications": [
-      "ibuprofen"
+    "symptoms": [
+      "headache"
     ]
   },
   "messages": [
     {
       "role": "patient",
-      "content": "What are ibuprofen side effects?"
+      "content": "I have a headache"
     },
     {
       "role": "assistant",
-      "content": "Here is general information about ibuprofen: Ibuprofen is a nonsteroidal anti-inflammatory drug used for pain, fever, or inflammation. Use the label or prescriber instructions. Taking it with food or milk may reduce stomach upset. Common side effects can include stomach upset, heartburn, dizziness. Important cautions: Ask a clinician before use if you may be experiencing kidney disease, stomach ulcers, take blood thinners, are pregnant, or were told to avoid NSAIDs. Seek urgent help for black stools, vomiting blood, swelling of the face or throat, or trouble breathing. Source: MedlinePlus - Ibuprofen.\n\nStill needed: Dose or strength and when it was taken; Relevant conditions such as pregnancy, kidney disease, liver disease, ulcers, or blood thinner use\n\nThis is general information, not a diagnosis. Please contact your doctor or care team for personal medical advice.\n\nUse medication only as directed on the label or by your prescriber. If you notice severe symptoms, an allergic reaction, or took more than directed, seek urgent help."
+      "content": "Mild headaches are often helped by rest, fluids, regular meals, reducing bright light, and avoiding alcohol. If headaches are new, changing, frequent, or interfering with daily life, it is worth checking in with a clinician.\n\nHelpful next steps: Drink water or an oral rehydration drink if you may be dehydrated.; Rest in a quiet, dim room.; Eat something light if you skipped a meal..\n\nMonitor: Pain level and location; Fever, neck stiffness, vision change, weakness, confusion; Recent head injury.\n\nGet urgent help for: Sudden worst headache; Headache after head injury; Headache with stiff neck, fever, confusion, fainting, weakness, vision change, or trouble speaking.\n\nStill needed: When this started or how long it has been happening; Current severity\n\nThis is general information, not a diagnosis. Please contact your doctor or care team for personal medical advice."
     }
   ]
 }
