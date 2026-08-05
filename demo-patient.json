@@ -1,25 +1,27 @@
 {
   "patient_id": "demo-patient",
-  "updated_at": "2026-07-01T18:22:04.718688+00:00",
+  "updated_at": "2026-07-01T18:23:12.592292+00:00",
   "metadata": {
-    "intent": "scheduling",
-    "intent_reason": "Selected scheduling with confidence 0.55. Urgency level: routine. scheduling signal: appointment Quality gates: moderate_route_confidence=watch.",
+    "intent": "pharmacy",
+    "intent_reason": "Selected pharmacy with confidence 0.45. Urgency level: routine. medication signal: ibuprofen Extracted clinical slots: medications. Missing information: Dose or strength and when it was taken; Relevant conditions such as pregnancy, kidney disease, liver disease, ulcers, or blood thinner use. Quality gates blocked: ambiguous_route.",
     "care_plan": {
-      "selected_intent": "scheduling",
+      "selected_intent": "pharmacy",
       "secondary_intents": [],
       "urgency_level": "routine",
       "route_scores": [
         {
-          "intent": "scheduling",
-          "score": 0.55,
+          "intent": "pharmacy",
+          "score": 0.45,
           "evidence": [
-            "scheduling signal: appointment"
+            "medication signal: ibuprofen"
           ]
         },
         {
           "intent": "rag",
-          "score": 0.28,
-          "evidence": []
+          "score": 0.36000000000000004,
+          "evidence": [
+            "patient profile contains prior symptoms"
+          ]
         },
         {
           "intent": "alert",
@@ -27,32 +29,41 @@
           "evidence": []
         },
         {
-          "intent": "pharmacy",
+          "intent": "scheduling",
           "score": 0.0,
           "evidence": []
         }
       ],
-      "clinical_slots": {},
+      "clinical_slots": {
+        "medications": [
+          "ibuprofen"
+        ]
+      },
       "reasoning_trace": [
-        "Selected scheduling with confidence 0.55.",
+        "Selected pharmacy with confidence 0.45.",
         "Urgency level: routine.",
-        "scheduling signal: appointment",
-        "Quality gates: moderate_route_confidence=watch."
+        "medication signal: ibuprofen",
+        "Extracted clinical slots: medications.",
+        "Missing information: Dose or strength and when it was taken; Relevant conditions such as pregnancy, kidney disease, liver disease, ulcers, or blood thinner use.",
+        "Quality gates blocked: ambiguous_route."
       ],
       "suggested_followups": [
-        "What day or time works best?",
-        "What is the reason for the visit?",
-        "Do you need a reminder or reschedule?"
+        "What is the exact medication name and strength on the label?",
+        "How much was taken and when?",
+        "Are there allergies, pregnancy, kidney disease, liver disease, or blood thinners involved?"
       ],
-      "missing_information": [],
+      "missing_information": [
+        "Dose or strength and when it was taken",
+        "Relevant conditions such as pregnancy, kidney disease, liver disease, ulcers, or blood thinner use"
+      ],
       "agent_actions": [
         {
           "name": "resolve_memory_context",
           "status": "completed",
           "rationale": "Loaded recent conversation and patient profile before choosing a specialist.",
           "details": {
-            "memory_messages_available": 0,
-            "recent_messages_used": 0
+            "memory_messages_available": 8,
+            "recent_messages_used": 4
           }
         },
         {
@@ -60,7 +71,7 @@
           "status": "completed",
           "rationale": "Extracted symptoms, medications, timing, risk phrases, and profile signals.",
           "details": {
-            "missing_information_count": 0
+            "missing_information_count": 2
           }
         },
         {
@@ -78,24 +89,26 @@
           "status": "completed",
           "rationale": "Combined extracted slots, vital-style measurements, memory, and profile signals before routing.",
           "details": {
-            "clinical_slot_count": 0,
+            "clinical_slot_count": 1,
             "measurement_count": 0
           }
         },
         {
           "name": "quality_gate_review",
-          "status": "completed",
-          "rationale": "Route confidence, ambiguity, and required-field checks passed.",
+          "status": "blocked",
+          "rationale": "Blocked specialist execution until the patient clarifies: ambiguous_route",
           "details": {
-            "blocking_gates": []
+            "blocking_gates": [
+              "ambiguous_route"
+            ]
           }
         },
         {
-          "name": "coordinate_scheduling_agent",
+          "name": "consult_pharmacy_agent",
           "status": "completed",
-          "rationale": "Appointment requests can be checked or drafted from local scheduling data.",
+          "rationale": "Medication safety questions require a named medicine before detailed lookup.",
           "details": {
-            "missing_information": []
+            "blocking_fields": []
           }
         },
         {
@@ -111,33 +124,55 @@
           "status": "watch",
           "reason": "The selected route is usable but should ask for concrete follow-up details.",
           "details": {
-            "confidence": 0.55,
+            "confidence": 0.45,
             "threshold": 0.58
+          }
+        },
+        {
+          "name": "ambiguous_route",
+          "status": "blocked",
+          "reason": "Two specialist routes are close enough that the agent should clarify before relying on one.",
+          "details": {
+            "top_intent": "pharmacy",
+            "second_intent": "rag",
+            "score_gap": 0.09
           }
         }
       ],
-      "needs_clarification": false,
-      "profile_signals": {},
-      "confidence": 0.55,
+      "needs_clarification": true,
+      "profile_signals": {
+        "symptoms": [
+          "headache",
+          "chest pain"
+        ],
+        "medications": [
+          "ibuprofen"
+        ]
+      },
+      "confidence": 0.45,
       "model_efficiency": {
         "routing_mode": "deterministic triage scoring",
         "route_count": 4,
         "secondary_intents": [],
         "secondary_specialist_strategy": "preview_non_emergency",
-        "memory_messages_available": 0,
-        "recent_messages_used": 0,
-        "profile_signal_count": 0,
+        "memory_messages_available": 8,
+        "recent_messages_used": 4,
+        "profile_signal_count": 3,
         "planned_specialist_calls": 1,
         "deferred_specialist_calls": 0,
-        "clarification_first": false,
-        "clinical_slot_count": 0,
+        "clarification_first": true,
+        "clinical_slot_count": 1,
         "measurement_signal_count": 0,
         "negated_red_flag_count": 0
       },
       "secondary_outputs": []
     },
     "secondary_outputs": [],
-    "safety_flags": [],
+    "safety_flags": [
+      "diagnosis_language_softened",
+      "medical_disclaimer_added",
+      "medication_safety_note_added"
+    ],
     "workflow_trace": [
       {
         "step": 1,
@@ -149,19 +184,19 @@
         "step": 2,
         "name": "load_memory",
         "status": "completed",
-        "summary": "Loaded 0 previous conversation messages and stored patient profile."
+        "summary": "Loaded 8 previous conversation messages and stored patient profile."
       },
       {
         "step": 3,
         "name": "intent_classifier",
         "status": "completed",
-        "summary": "Selected scheduling route with urgency routine."
+        "summary": "Selected pharmacy route with urgency routine."
       },
       {
         "step": 4,
         "name": "specialist_agent",
         "status": "completed",
-        "summary": "Routed to Scheduling Agent."
+        "summary": "Routed to Pharmacy Agent."
       },
       {
         "step": 5,
@@ -185,41 +220,55 @@
         "step": 8,
         "name": "update_memory",
         "status": "completed",
-        "summary": "Saved the patient and assistant exchange; memory now keeps up to 2 messages."
+        "summary": "Saved the patient and assistant exchange; memory now keeps up to 10 messages."
       }
     ],
     "governance_card": {
       "intended_use": "General health education, routing, and care-team handoff support.",
       "decision_role": "Informs or augments patient and care-team decisions; does not replace clinical judgment.",
-      "source_quality": "none",
-      "sources": [],
+      "source_quality": "trusted",
+      "sources": [
+        {
+          "name": "MedlinePlus - Ibuprofen",
+          "url": "https://medlineplus.gov/druginfo/meds/a682159.html"
+        }
+      ],
       "handoff": {
-        "level": "clinician_review",
-        "owner": "Care team",
-        "reason": "The agent has limited source support or low route confidence."
+        "level": "pharmacist_or_prescriber",
+        "owner": "Pharmacist or prescriber",
+        "reason": "Medication advice needs exact label details and patient-specific risk factors."
       },
       "handoff_packet": {
-        "title": "Scheduling handoff packet",
+        "title": "Pharmacy handoff packet",
         "urgency_level": "routine",
-        "handoff_level": "clinician_review",
-        "handoff_owner": "Care team",
-        "primary_agent": "Scheduling Agent",
+        "handoff_level": "pharmacist_or_prescriber",
+        "handoff_owner": "Pharmacist or prescriber",
+        "primary_agent": "Pharmacy Agent",
         "route_summary": [
-          "scheduling: 0.55 (scheduling signal: appointment)",
-          "rag: 0.28",
+          "pharmacy: 0.45 (medication signal: ibuprofen)",
+          "rag: 0.36 (patient profile contains prior symptoms)",
           "alert: 0.00",
-          "pharmacy: 0.00"
+          "scheduling: 0.00"
         ],
-        "known_facts": [],
-        "missing_information": [],
+        "known_facts": [
+          "Medications: ibuprofen"
+        ],
+        "missing_information": [
+          "Dose or strength and when it was taken",
+          "Relevant conditions such as pregnancy, kidney disease, liver disease, ulcers, or blood thinner use"
+        ],
         "secondary_work": [],
-        "next_best_action": "Confirm the appointment details with the care team and watch for any urgent symptom changes.",
-        "safety_flags": [],
+        "next_best_action": "Ask the patient for: Dose or strength and when it was taken; Relevant conditions such as pregnancy, kidney disease, liver disease, ulcers, or blood thinner use.",
+        "safety_flags": [
+          "diagnosis_language_softened",
+          "medical_disclaimer_added",
+          "medication_safety_note_added"
+        ],
         "reasoning_snapshot": [
-          "Selected scheduling with confidence 0.55.",
+          "Selected pharmacy with confidence 0.45.",
           "Urgency level: routine.",
-          "scheduling signal: appointment",
-          "Quality gates: moderate_route_confidence=watch."
+          "medication signal: ibuprofen",
+          "Extracted clinical slots: medications."
         ]
       },
       "quality_gates": [
@@ -228,8 +277,18 @@
           "status": "watch",
           "reason": "The selected route is usable but should ask for concrete follow-up details.",
           "details": {
-            "confidence": 0.55,
+            "confidence": 0.45,
             "threshold": 0.58
+          }
+        },
+        {
+          "name": "ambiguous_route",
+          "status": "blocked",
+          "reason": "Two specialist routes are close enough that the agent should clarify before relying on one.",
+          "details": {
+            "top_intent": "pharmacy",
+            "second_intent": "rag",
+            "score_gap": 0.09
           }
         }
       ],
@@ -240,13 +299,13 @@
         "route_count": 4,
         "secondary_intents": [],
         "secondary_specialist_strategy": "preview_non_emergency",
-        "memory_messages_available": 0,
-        "recent_messages_used": 0,
-        "profile_signal_count": 0,
+        "memory_messages_available": 8,
+        "recent_messages_used": 4,
+        "profile_signal_count": 3,
         "planned_specialist_calls": 1,
         "deferred_specialist_calls": 0,
-        "clarification_first": false,
-        "clinical_slot_count": 0,
+        "clarification_first": true,
+        "clinical_slot_count": 1,
         "measurement_signal_count": 0,
         "negated_red_flag_count": 0
       },
@@ -255,7 +314,7 @@
         "Patient-reported text may be incomplete, ambiguous, or inaccurate.",
         "Local demo data can become stale and should be reviewed before production use.",
         "The model should inform or augment decisions, not replace clinical management.",
-        "No external source was matched for this turn."
+        "No personalized dose changes, starts, stops, or interactions are provided."
       ],
       "risk_controls": [
         "Emergency signal override",
@@ -272,39 +331,88 @@
       ]
     },
     "handoff_packet": {
-      "title": "Scheduling handoff packet",
+      "title": "Pharmacy handoff packet",
       "urgency_level": "routine",
-      "handoff_level": "clinician_review",
-      "handoff_owner": "Care team",
-      "primary_agent": "Scheduling Agent",
+      "handoff_level": "pharmacist_or_prescriber",
+      "handoff_owner": "Pharmacist or prescriber",
+      "primary_agent": "Pharmacy Agent",
       "route_summary": [
-        "scheduling: 0.55 (scheduling signal: appointment)",
-        "rag: 0.28",
+        "pharmacy: 0.45 (medication signal: ibuprofen)",
+        "rag: 0.36 (patient profile contains prior symptoms)",
         "alert: 0.00",
-        "pharmacy: 0.00"
+        "scheduling: 0.00"
       ],
-      "known_facts": [],
-      "missing_information": [],
+      "known_facts": [
+        "Medications: ibuprofen"
+      ],
+      "missing_information": [
+        "Dose or strength and when it was taken",
+        "Relevant conditions such as pregnancy, kidney disease, liver disease, ulcers, or blood thinner use"
+      ],
       "secondary_work": [],
-      "next_best_action": "Confirm the appointment details with the care team and watch for any urgent symptom changes.",
-      "safety_flags": [],
+      "next_best_action": "Ask the patient for: Dose or strength and when it was taken; Relevant conditions such as pregnancy, kidney disease, liver disease, ulcers, or blood thinner use.",
+      "safety_flags": [
+        "diagnosis_language_softened",
+        "medical_disclaimer_added",
+        "medication_safety_note_added"
+      ],
       "reasoning_snapshot": [
-        "Selected scheduling with confidence 0.55.",
+        "Selected pharmacy with confidence 0.45.",
         "Urgency level: routine.",
-        "scheduling signal: appointment",
-        "Quality gates: moderate_route_confidence=watch."
+        "medication signal: ibuprofen",
+        "Extracted clinical slots: medications."
       ]
     }
   },
-  "patient_profile": {},
+  "patient_profile": {
+    "symptoms": [
+      "headache",
+      "chest pain"
+    ],
+    "medications": [
+      "ibuprofen"
+    ]
+  },
   "messages": [
     {
       "role": "patient",
-      "content": "When is my next appointment?"
+      "content": "I have a headache"
     },
     {
       "role": "assistant",
-      "content": "Your next appointment is with Dr. Patel on Thursday, July 2, 2026 at 9:30 AM.\n\nHelpful details to share next: What day or time works best?; What is the reason for the visit?; Do you need a reminder or reschedule?"
+      "content": "Mild headaches are often helped by rest, fluids, regular meals, reducing bright light, and avoiding alcohol. If headaches are new, changing, frequent, or interfering with daily life, it is worth checking in with a clinician.\n\nHelpful next steps: Drink water or an oral rehydration drink if you may be dehydrated.; Rest in a quiet, dim room.; Eat something light if you skipped a meal..\n\nMonitor: Pain level and location; Fever, neck stiffness, vision change, weakness, confusion; Recent head injury.\n\nGet urgent help for: Sudden worst headache; Headache after head injury; Headache with stiff neck, fever, confusion, fainting, weakness, vision change, or trouble speaking.\n\nStill needed: When this started or how long it has been happening; Current severity\n\nThis is general information, not a diagnosis. Please contact your doctor or care team for personal medical advice."
+    },
+    {
+      "role": "patient",
+      "content": "What are ibuprofen side effects?"
+    },
+    {
+      "role": "assistant",
+      "content": "Here is general information about ibuprofen: Ibuprofen is a nonsteroidal anti-inflammatory drug used for pain, fever, or inflammation. Use the label or prescriber instructions. Taking it with food or milk may reduce stomach upset. Common side effects can include stomach upset, heartburn, dizziness. Important cautions: Ask a clinician before use if you may be experiencing kidney disease, stomach ulcers, take blood thinners, are pregnant, or were told to avoid NSAIDs. Seek urgent help for black stools, vomiting blood, swelling of the face or throat, or trouble breathing. Source: MedlinePlus - Ibuprofen.\n\nThis is general information, not a diagnosis. Please contact your doctor or care team for personal medical advice.\n\nUse medication only as directed on the label or by your prescriber. If you notice severe symptoms, an allergic reaction, or took more than directed, seek urgent help."
+    },
+    {
+      "role": "patient",
+      "content": "I have chest pain and cannot breathe"
+    },
+    {
+      "role": "assistant",
+      "content": "This may be an emergency. Call local emergency services now, or ask someone nearby to call for you. If you are in the U.S., call 911. I have started the caregiver alert workflow."
+    },
+    {
+      "role": "patient",
+      "content": "I have chest pain and cannot breathe"
+    },
+    {
+      "role": "assistant",
+      "content": "This may be an emergency. Call local emergency services now, or ask someone nearby to call for you. If you are in the U.S., call 911. I have started the caregiver alert workflow."
+    },
+    {
+      "role": "patient",
+      "content": "What are ibuprofen side effects?"
+    },
+    {
+      "role": "assistant",
+      "content": "Here is general information about ibuprofen: Ibuprofen is a nonsteroidal anti-inflammatory drug used for pain, fever, or inflammation. Use the label or prescriber instructions. Taking it with food or milk may reduce stomach upset. Common side effects can include stomach upset, heartburn, dizziness. Important cautions: Ask a clinician before use if you may be experiencing kidney disease, stomach ulcers, take blood thinners, are pregnant, or were told to avoid NSAIDs. Seek urgent help for black stools, vomiting blood, swelling of the face or throat, or trouble breathing. Source: MedlinePlus - Ibuprofen.\n\nThis is general information, not a diagnosis. Please contact your doctor or care team for personal medical advice.\n\nUse medication only as directed on the label or by your prescriber. If you notice severe symptoms, an allergic reaction, or took more than directed, seek urgent help."
     }
   ]
 }
